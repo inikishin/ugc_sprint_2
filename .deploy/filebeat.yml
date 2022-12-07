@@ -1,0 +1,13 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/*
+      - /var/log/ugc_api/*
+    json:
+      keys_under_root: true
+      add_error_key: true
+
+output.logstash:
+  enabled: true
+  hosts: ["elk-logstash:5045"]

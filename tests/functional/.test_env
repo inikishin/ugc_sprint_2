@@ -1,0 +1,32 @@
+ELASTIC_HOST=test_elasticsearch
+ELASTIC_PORT=9200
+REDIS_HOST=test_redis
+REDIS_PORT=6379
+REDIS_PASSWORD=redis_secret
+
+PROJECT_NAME=movies
+
+API_HOST=127.0.0.1
+API_PORT=8000
+
+discovery.type=single-node
+bootstrap.memory_lock=true
+ES_JAVA_OPTS=-Xms512m -Xmx512m
+xpack.security.enabled=true
+ELASTIC_USERNAME=elastic
+ELASTIC_PASSWORD=elastic_secret
+cluster.routing.allocation.disk.threshold_enabled=false
+
+POSTGRES_PASSWORD=123qwe
+POSTGRES_USER=app
+POSTGRES_DB=auth_database
+
+PG_AUTH_USER=app
+PG_AUTH_PASS=123qwe
+PG_AUTH_DB=auth_database
+PG_AUTH_HOST=test_auth_postgres
+PG_AUTH_PORT=5432
+
+OPENTELEMETRY_JAEGER_HOST=test_jaeger
+OPENTELEMETRY_JAEGER_PORT=6831
+OPENTELEMETRY_SERVICE_NAME='Auth API'

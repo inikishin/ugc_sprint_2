@@ -1,0 +1,78 @@
+version: "3"
+
+services:
+  test_elasticsearch:
+    image: elasticsearch:7.7.0
+    container_name: test_elasticsearch
+    ports:
+      - "9200"
+      - "9300"
+    env_file:
+      - ./.test_env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65535
+        hard: 65535
+    logging:
+      driver: "none"
+    networks:
+      - int_net
+
+  test_redis:
+    image: redis:7.0.0
+    container_name: test_redis
+    entrypoint: redis-server
+    command: --requirepass redis_secret
+    ports:
+      - "6379"
+    logging:
+      driver: "none"
+    networks:
+      - int_net
+
+  test_auth_postgres:
+    image: postgres:13
+    container_name: test_auth_postgres
+    ports:
+      - "5432"
+    env_file:
+      - ./.test_env
+    networks:
+      - int_net
+
+  test_jaeger:
+    image: jaegertracing/all-in-one
+    container_name: test_jaeger
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+    networks:
+      - int_net
+
+  tests:
+    container_name: tests
+    build:
+        context: ../../.
+        dockerfile: tests/functional/Dockerfile
+    volumes:
+      - ./:/data/tests/functional
+      - ./../../async_api:/data/async_api
+      - ./../../auth_api:/data/auth_api
+    env_file:
+      - ./.test_env
+    depends_on:
+      - test_elasticsearch
+      - test_redis
+    links:
+      - test_elasticsearch
+      - test_redis
+      - test_auth_postgres
+    networks:
+      - int_net
+
+networks:
+  int_net:
+    internal: true

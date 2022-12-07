@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+component   jaeger
+component   admin_panel
+database    data_postgres
+component   nginx
+component   etl
+
+node "Movies API" {
+    component   async_api
+    database    elasticsearch
+    database    redis
+    elasticsearch -> async_api
+    redis --> async_api
+}
+
+node "Auth API" {
+    database    auth_postgres
+    component   auth_api
+    auth_postgres -> auth_api
+}
+
+jaeger --> auth_api
+auth_api --> nginx
+async_api --> nginx
+admin_panel --> nginx
+data_postgres --> admin_panel
+data_postgres --> etl
+etl --> elasticsearch
+
+note bottom of etl
+  ETL процесс, переливающий
+  данные из PostgreSQL
+  в ElasticSearch
+end note
+@enduml
