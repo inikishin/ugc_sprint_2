@@ -22,3 +22,7 @@ class MovieLastViewTime(BaseModel):
     movie_id: str
     user_id: str
     paused_sec: int
+
+
+class SuccessResponse(BaseModel):
+    msg: str = 'Success'
