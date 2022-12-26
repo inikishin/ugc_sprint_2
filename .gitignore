@@ -13,3 +13,4 @@ async_api/.env
 /auth_api/log/
 /ugc_etl/.env.compose
 /ugc_api/src/logs.log
+/ugc_api/src/logging.conf
