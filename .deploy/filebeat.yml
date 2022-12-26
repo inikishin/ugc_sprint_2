@@ -1,6 +1,6 @@
 filebeat.inputs:
-  - type: log
-    enabled: true
+  - type: filestream
+    id: ugc-logs-input
     paths:
       - /var/log/nginx/*
       - /var/log/ugc_api/*
