@@ -9,7 +9,7 @@ RUN groupadd -r api_group && useradd -d /data -r -g api_group api_user \
 
 USER api_user
 
-COPY ugc_api/requirements.txt requirements.txt
+COPY ./ugc_api/requirements.txt requirements.txt
 
 ENV PATH "/data/.local/bin:$PATH"
 
