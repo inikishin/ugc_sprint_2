@@ -16,14 +16,17 @@ from middleware.logger_middleware import LoggerMiddleware
 
 load_dotenv()
 
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_SDK_FAST_API'),
-    integrations=[
-        StarletteIntegration(),
-        FastApiIntegration(),
-    ],
-    traces_sample_rate=1.0,
-)
+try:
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_SDK_FAST_API'),
+        integrations=[
+            StarletteIntegration(),
+            FastApiIntegration(),
+        ],
+        traces_sample_rate=1.0,
+    )
+except Exception as err:
+    logger.error("Can't connect to sentry. Error: %s", err)
 
 app = FastAPI(
     title=config.PROJECT_NAME,
