@@ -4,16 +4,18 @@ import os
 from flask_jwt_extended import get_jwt
 import redis
 
-REQUEST_LIMIT_PER_MINUTE = int(os.getenv('REQUEST_LIMIT_PER_MINUTE', 5))
+REQUEST_LIMIT_PER_MINUTE = int(os.getenv("REQUEST_LIMIT_PER_MINUTE", 5))
 
 redis_conn = redis.Redis(
-    host=os.getenv('REDIS_HOST', 'localhost'),
-    port=int(os.getenv('REDIS_PORT', '6379')),
-    db=os.getenv('REDIS_DB_RATE_LIMITS', 3))
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", "6379")),
+    db=os.getenv("REDIS_DB_RATE_LIMITS", 3),
+)
 
 
 def limit_leaky_bucket(func):
     """Rate limit controller with leaky bucket strategy"""
+
     def limit_leaky_bucket_wrapper():
         jti = get_jwt()
 
@@ -26,7 +28,7 @@ def limit_leaky_bucket(func):
 
         request_number = result[0]
         if request_number > REQUEST_LIMIT_PER_MINUTE:
-            return {'msg': f'Too many requests ({request_number})'}, 429
+            return {"msg": f"Too many requests ({request_number})"}, 429
         else:
             return func()
 

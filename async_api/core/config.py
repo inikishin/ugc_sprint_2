@@ -9,16 +9,16 @@ logging_config.dictConfig(LOGGING)
 
 class Settings(BaseSettings):
 
-    PROJECT_NAME: str = os.getenv('PROJECT_NAME', 'movies')
+    PROJECT_NAME: str = os.getenv("PROJECT_NAME", "movies")
 
-    REDIS_HOST: str = os.getenv('REDIS_HOST', '127.0.0.1')
-    REDIS_PORT: int = int(os.getenv('REDIS_PORT', 6379))
-    REDIS_PASSWORD: str = os.getenv('REDIS_PASSWORD', '')
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "127.0.0.1")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
+    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
 
-    ELASTIC_HOST: str = os.getenv('ELASTIC_HOST', '127.0.0.1')
-    ELASTIC_PORT: int = int(os.getenv('ELASTIC_PORT', 9200))
-    ELASTIC_USERNAME: str = os.getenv('ELASTIC_USERNAME', '')
-    ELASTIC_PASSWORD: str = os.getenv('ELASTIC_PASSWORD', '')
+    ELASTIC_HOST: str = os.getenv("ELASTIC_HOST", "127.0.0.1")
+    ELASTIC_PORT: int = int(os.getenv("ELASTIC_PORT", 9200))
+    ELASTIC_USERNAME: str = os.getenv("ELASTIC_USERNAME", "")
+    ELASTIC_PASSWORD: str = os.getenv("ELASTIC_PASSWORD", "")
 
     BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

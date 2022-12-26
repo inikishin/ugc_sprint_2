@@ -15,12 +15,10 @@ def json_get_list_response(data: list, total: int = None) -> Response:
     :return: Flask Response object via make_response function
     https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.make_response
     """
-    response = {
-        "data": data if data else []
-    }
+    response = {"data": data if data else []}
 
     if total:
-        response['total'] = total
+        response["total"] = total
 
     return make_response(
         (
@@ -67,18 +65,13 @@ def json_delete_response(status: bool) -> Response:
     with app.app_context():
         return make_response(
             (
-                {"data":
-                     {"status": status}
-                 },
+                {"data": {"status": status}},
                 200,
             )
         )
 
 
-def json_error_response(status: int,
-                              code: str,
-                              title: str,
-                              detail: str) -> Response:
+def json_error_response(status: int, code: str, title: str, detail: str) -> Response:
     """
     Create json error response accordingly with JSON API specification
     https://jsonapi.org/format/#error-objects

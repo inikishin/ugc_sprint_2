@@ -17,35 +17,25 @@ class EventService:
         try:
             await self.producer.send_and_wait(
                 topic=topic,
-                value=value.encode('UTF-8'),
-                key=key.encode('UTF-8'),
+                value=value.encode("UTF-8"),
+                key=key.encode("UTF-8"),
             )
         finally:
             await self.producer.stop()
 
     def send_rating(self, user_id: str, movie_id: str, rating: float) -> None:
-        self._send_message(TOPIC_RATING,
-                           user_id,
-                           f'{movie_id}+{str(rating)}')
+        self._send_message(TOPIC_RATING, user_id, f"{movie_id}+{str(rating)}")
 
     def send_history(self, user_id: str, movie_id: str, viewed: int) -> None:
-        self._send_message(TOPIC_VIEWS,
-                           user_id,
-                           f'{movie_id}+{str(viewed)}')
+        self._send_message(TOPIC_VIEWS, user_id, f"{movie_id}+{str(viewed)}")
 
     def send_bookmark(self, user_id: str, movie_id: str) -> None:
-        self._send_message(TOPIC_BOOKMARKS,
-                           user_id,
-                           movie_id)
+        self._send_message(TOPIC_BOOKMARKS, user_id, movie_id)
 
     def send_last_view_time(self, user_id: str, movie_id: str, paused_sec: int) -> None:
-        self._send_message(TOPIC_LAST_VIEW,
-                           user_id,
-                           f'{movie_id}+{str(paused_sec)}')
+        self._send_message(TOPIC_LAST_VIEW, user_id, f"{movie_id}+{str(paused_sec)}")
 
 
 @lru_cache()
 def get_event_service() -> EventService:
-    return EventService(
-        [os.getenv('KAFKA_SERVER', 'localhost:9092')]
-    )
+    return EventService([os.getenv("KAFKA_SERVER", "localhost:9092")])

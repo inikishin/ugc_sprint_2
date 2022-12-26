@@ -10,40 +10,37 @@ from testdata.films_data import persons_data_ids
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    'endpoint', ['/films/', '/genres/', '/persons/{uuid}']
-)
-async def test_main_cache(
-        make_get_request, cache_fixture, load_data, endpoint
-):
+@pytest.mark.parametrize("endpoint", ["/films/", "/genres/", "/persons/{uuid}"])
+async def test_main_cache(make_get_request, cache_fixture, load_data, endpoint):
     cache = cache_fixture
     await cache.clear()
 
     methods = {
-        '/films/': {
-            'class': ElasticFilmService,
-            'side_effect': ElasticFilmService.get_films
+        "/films/": {
+            "class": ElasticFilmService,
+            "side_effect": ElasticFilmService.get_films,
         },
-        '/genres/': {
-            'class': ElasticGenreService,
-            'side_effect': ElasticGenreService.get_genres
+        "/genres/": {
+            "class": ElasticGenreService,
+            "side_effect": ElasticGenreService.get_genres,
         },
-        '/persons/{uuid}': {
-            'class': ElasticPersonService,
-            'side_effect': ElasticPersonService.get_by_id,
-            'uuid': persons_data_ids[0]
-        }
+        "/persons/{uuid}": {
+            "class": ElasticPersonService,
+            "side_effect": ElasticPersonService.get_by_id,
+            "uuid": persons_data_ids[0],
+        },
     }
 
     with patch.object(
-            methods[endpoint]['class'],
-            methods[endpoint]['side_effect'].__name__,
-            side_effect=methods[endpoint]['side_effect'],
-            autospec=True) as mocked_method:
+        methods[endpoint]["class"],
+        methods[endpoint]["side_effect"].__name__,
+        side_effect=methods[endpoint]["side_effect"],
+        autospec=True,
+    ) as mocked_method:
 
         mocked_method.reset_mock()
 
-        endpoint = endpoint.format(uuid=methods[endpoint].get('uuid'))
+        endpoint = endpoint.format(uuid=methods[endpoint].get("uuid"))
 
         # Первый запрос - берем данные из базы
         response = await make_get_request(endpoint)

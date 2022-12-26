@@ -18,7 +18,7 @@ load_dotenv()
 
 try:
     sentry_sdk.init(
-        dsn=os.getenv('SENTRY_SDK_FAST_API'),
+        dsn=os.getenv("SENTRY_SDK_FAST_API"),
         integrations=[
             StarletteIntegration(),
             FastApiIntegration(),
@@ -30,23 +30,24 @@ except Exception as err:
 
 app = FastAPI(
     title=config.PROJECT_NAME,
-    docs_url='/api/openapi',
-    openapi_url='/api/openapi.json',
+    docs_url="/api/openapi",
+    openapi_url="/api/openapi.json",
     default_response_class=ORJSONResponse,
 )
 
-app.include_router(events.router, prefix='/api/v1/events', tags=['events'])
+app.include_router(events.router, prefix="/api/v1/events", tags=["events"])
 
-app.add_middleware(AuthMiddleware,
-                   auth_url=os.getenv('AUTH_URL', 'http://localhost:5000/auth/who'))
+app.add_middleware(
+    AuthMiddleware, auth_url=os.getenv("AUTH_URL", "http://localhost:5000/auth/who")
+)
 
 app.add_middleware(LoggerMiddleware)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # `uvicorn main:app --host 0.0.0.0 --port 8000`
     uvicorn.run(
-        'main:app',
-        host='0.0.0.0',
+        "main:app",
+        host="0.0.0.0",
         port=8000,
     )

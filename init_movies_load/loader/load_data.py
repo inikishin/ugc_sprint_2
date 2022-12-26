@@ -28,7 +28,7 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
     postgres_saver = PostgresSaver(pg_conn)
     sqlite_loader = SQLiteLoader(connection)
 
-    batch_size = int(os.getenv('BATCH_SIZE'))
+    batch_size = int(os.getenv("BATCH_SIZE"))
 
     for table_name in sqlite_loader.tables:
         cursor = sqlite_loader.load_movies(table_name)
@@ -40,14 +40,15 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
     logging.debug(data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     dsl = {
-        'dbname': os.getenv('DB_NAME'),
-        'user': os.getenv('DB_USER'),
-        'password': os.getenv('DB_PASSWORD'),
-        'host': os.getenv('DB_HOST'),
-        'port': os.getenv('DB_PORT')
+        "dbname": os.getenv("DB_NAME"),
+        "user": os.getenv("DB_USER"),
+        "password": os.getenv("DB_PASSWORD"),
+        "host": os.getenv("DB_HOST"),
+        "port": os.getenv("DB_PORT"),
     }
-    with open_db(file_name=os.getenv('SQLITE_PATH')) as sqlite_conn, \
-            psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+    with open_db(file_name=os.getenv("SQLITE_PATH")) as sqlite_conn, psycopg2.connect(
+        **dsl, cursor_factory=DictCursor
+    ) as pg_conn:
         load_from_sqlite(sqlite_conn, pg_conn)

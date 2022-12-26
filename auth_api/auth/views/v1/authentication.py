@@ -7,18 +7,17 @@ from auth.main import logger
 from auth.models import db
 from auth.services.authentication import AuthService
 from auth.services.users import UserService
-from auth.views.schemas import user_schema, login_input_schema,\
-    register_input_schema
+from auth.views.schemas import user_schema, login_input_schema, register_input_schema
 from auth.utils.api_error_handling_wrapper import api_error_handling_wrapper
 from auth.utils.rbac import allow
 from auth.utils.opentelemetry_tracer import trace
 from auth.utils.rate_limits import limit_leaky_bucket
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@bp.route('/who', methods=['GET'])
-@allow(['admin', 'user'])
+@bp.route("/who", methods=["GET"])
+@allow(["admin", "user"])
 @jwt_required()
 @limit_leaky_bucket
 def who():
@@ -58,16 +57,16 @@ def who():
     return {
         "auth": True,
         "user": {
-            'email': jti['email'],
-            'first_name': jti['first_name'],
-            'last_name': jti['last_name'],
-            'sub': jti['sub'],
-            'role_names': jti['role_names'],
-        }
+            "email": jti["email"],
+            "first_name": jti["first_name"],
+            "last_name": jti["last_name"],
+            "sub": jti["sub"],
+            "role_names": jti["role_names"],
+        },
     }
 
 
-@bp.route('/register', methods=['POST'])
+@bp.route("/register", methods=["POST"])
 @api_error_handling_wrapper
 def register():
     """Регистрация нового пользователя
@@ -99,19 +98,22 @@ def register():
 
     user_service = UserService(db)
     if user_service.is_user_exists(email):
-        raise BadRequest(f'User with email {email} already exists')
+        raise BadRequest(f"User with email {email} already exists")
 
     new_user = user_service.create_user(
-        email=email, password=password, first_name=first_name,
-        last_name=last_name, phone=phone
+        email=email,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        phone=phone,
     )
 
     return user_schema.dumps(new_user)
 
 
 @api_error_handling_wrapper
-@bp.route('/login', methods=['POST'])
-@trace(span_name='login view')
+@bp.route("/login", methods=["POST"])
+@trace(span_name="login view")
 def login():
     """Точка входа для существующего пользователя
     ---
@@ -156,7 +158,7 @@ def login():
 
     req_login = login_data.get("login", None)
     req_password = login_data.get("password", None)
-    user_agent = request.headers['User-agent']
+    user_agent = request.headers["User-agent"]
     ip = request.remote_addr
 
     auth_service = AuthService(db)
@@ -181,7 +183,7 @@ def refresh():
       - auth
     """
 
-    refresh_token = request.headers['Authorization'].split(' ')[1]
+    refresh_token = request.headers["Authorization"].split(" ")[1]
     identity = get_jwt_identity()
 
     auth_service = AuthService(db)
@@ -205,7 +207,6 @@ def logout():
     jwt = get_jwt()
 
     auth_service = AuthService(db)
-    logout_result = auth_service.logout(user_id=jwt['sub'],
-                                        jti=jwt["jti"])
+    logout_result = auth_service.logout(user_id=jwt["sub"], jti=jwt["jti"])
 
     return {"msg": "Access token revoked"} if logout_result else None

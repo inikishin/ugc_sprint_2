@@ -4,19 +4,24 @@ from flask_jwt_extended import jwt_required
 
 from auth.models import db
 from auth.services.users import UserService
-from auth.views.schemas import roles_schema, user_schema, users_schema, user_login_history_schema
+from auth.views.schemas import (
+    roles_schema,
+    user_schema,
+    users_schema,
+    user_login_history_schema,
+)
 from auth.utils.api_error_handling_wrapper import api_error_handling_wrapper
 from auth.utils.rate_limits import limit_leaky_bucket
 from auth.utils.rbac import allow
 
-bp = Blueprint('users', __name__, url_prefix='/users')
+bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 class UsersAPI(MethodView):
-    methods = ['GET', 'POST', 'PUT', 'DELETE']
+    methods = ["GET", "POST", "PUT", "DELETE"]
     decorators = [api_error_handling_wrapper, jwt_required()]
 
-    @allow(['admin', 'user'])
+    @allow(["admin", "user"])
     def get(self, user_id: str):
         """Получение данных о пользователях
         ---
@@ -84,11 +89,13 @@ class UsersAPI(MethodView):
         user_last_name = request.json.get("last_name", None)
         user_phone = request.json.get("phone", None)
 
-        new_user = user_service.create_user(email=user_email,
-                                            password=user_password,
-                                            first_name=user_first_name,
-                                            last_name=user_last_name,
-                                            phone=user_phone)
+        new_user = user_service.create_user(
+            email=user_email,
+            password=user_password,
+            first_name=user_first_name,
+            last_name=user_last_name,
+            phone=user_phone,
+        )
 
         return user_schema.dumps(new_user)
 
@@ -114,8 +121,7 @@ class UsersAPI(MethodView):
         """
         user_service = UserService(db)
 
-        updated_user = user_service.update_user(user_id=user_id,
-                                                user_data=request.json)
+        updated_user = user_service.update_user(user_id=user_id, user_data=request.json)
 
         return user_schema.dumps(updated_user)
 
@@ -138,13 +144,13 @@ class UsersAPI(MethodView):
 
         deleted = user_service.deactivate_user(user_id)
 
-        return {'msg': 'user deleted'} if deleted else None
+        return {"msg": "user deleted"} if deleted else None
 
 
-@bp.route('/<uuid:user_id>/roles', methods=['GET'])
+@bp.route("/<uuid:user_id>/roles", methods=["GET"])
 @api_error_handling_wrapper
 @limit_leaky_bucket
-@allow(['user', 'admin'])
+@allow(["user", "admin"])
 def get_user_roles(user_id):
     """Возвращает текущие роли пользователя
     ---
@@ -173,10 +179,10 @@ def get_user_roles(user_id):
     return roles_schema.dumps(roles)
 
 
-@bp.route('/<uuid:user_id>/login-history', methods=['GET'])
+@bp.route("/<uuid:user_id>/login-history", methods=["GET"])
 @api_error_handling_wrapper
 @limit_leaky_bucket
-@allow(['user', 'admin'])
+@allow(["user", "admin"])
 def get_user_login_history(user_id):
     """Возвращает историю логинов пользователя
     ---
@@ -194,20 +200,18 @@ def get_user_login_history(user_id):
     tags:
       - users
     """
-    page_number = int(request.args.get('page[number]', 1))
-    page_size = int(request.args.get('page[size]', 100))
+    page_number = int(request.args.get("page[number]", 1))
+    page_size = int(request.args.get("page[size]", 100))
     user_service = UserService(db)
-    history = user_service.get_user_login_history(user_id,
-                                                  page_number,
-                                                  page_size)
+    history = user_service.get_user_login_history(user_id, page_number, page_size)
 
     return user_login_history_schema.dumps(history)
 
 
-@bp.route('/<uuid:user_id>/add-role', methods=['POST'])
+@bp.route("/<uuid:user_id>/add-role", methods=["POST"])
 @api_error_handling_wrapper
 @limit_leaky_bucket
-@allow(['admin'])
+@allow(["admin"])
 def add_role_to_user(user_id):
     """Добавляет роль пользователю
     ---
@@ -240,13 +244,13 @@ def add_role_to_user(user_id):
     user_service = UserService(db)
     link_id = user_service.add_role_to_user(user_id, role_id)
 
-    return {'msg': 'Role added'} if link_id else None
+    return {"msg": "Role added"} if link_id else None
 
 
-@bp.route('/<uuid:user_id>/remove-role', methods=['POST'])
+@bp.route("/<uuid:user_id>/remove-role", methods=["POST"])
 @api_error_handling_wrapper
 @limit_leaky_bucket
-@allow(['admin'])
+@allow(["admin"])
 def remove_role_from_user(user_id):
     """Удаляет роль пользователю
     ---
@@ -279,15 +283,16 @@ def remove_role_from_user(user_id):
     user_service = UserService(db)
     success = user_service.remove_role_to_user(user_id, role_id)
 
-    return {'msg': 'Role removed'} if success else None
+    return {"msg": "Role removed"} if success else None
 
 
-view = UsersAPI.as_view('users_api')
-bp.add_url_rule('',
-                defaults={'user_id': None},
-                view_func=view,
-                methods=['GET', 'POST'])
-bp.add_url_rule('', view_func=view, methods=['POST', ])
-bp.add_url_rule('/<uuid:user_id>',
-                view_func=view,
-                methods=['GET', 'PUT', 'DELETE'])
+view = UsersAPI.as_view("users_api")
+bp.add_url_rule("", defaults={"user_id": None}, view_func=view, methods=["GET", "POST"])
+bp.add_url_rule(
+    "",
+    view_func=view,
+    methods=[
+        "POST",
+    ],
+)
+bp.add_url_rule("/<uuid:user_id>", view_func=view, methods=["GET", "PUT", "DELETE"])

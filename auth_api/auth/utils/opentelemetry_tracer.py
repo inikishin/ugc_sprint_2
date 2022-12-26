@@ -14,5 +14,7 @@ def trace(span_name: str, tags: Optional[dict] = None):
                         span.set_attribute(k, tags[k])
                 result = func(*args, **kwargs)
             return result
+
         return wrapper
+
     return decorator

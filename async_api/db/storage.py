@@ -7,7 +7,6 @@ from core.config import Settings
 
 
 class BaseStorage(ABC):
-
     @abstractmethod
     def get_connection(self) -> Any:
         pass
@@ -18,7 +17,6 @@ class BaseStorage(ABC):
 
 
 class EmptyStorage(BaseStorage):
-
     def get_connection(self) -> Any:
         return
 
@@ -27,17 +25,14 @@ class EmptyStorage(BaseStorage):
 
 
 class ElasticStorage(BaseStorage):
-
     def __init__(self, cfg: Settings):
-        elastic_conn_string = 'http://{user}:{password}@{host}:{port}/'.format(
+        elastic_conn_string = "http://{user}:{password}@{host}:{port}/".format(
             user=cfg.ELASTIC_USERNAME,
             password=cfg.ELASTIC_PASSWORD,
             host=cfg.ELASTIC_HOST,
-            port=cfg.ELASTIC_PORT
+            port=cfg.ELASTIC_PORT,
         )
-        self.elastic = AsyncElasticsearch(
-            hosts=[elastic_conn_string]
-        )
+        self.elastic = AsyncElasticsearch(hosts=[elastic_conn_string])
 
     def get_connection(self) -> Any:
         return self.elastic

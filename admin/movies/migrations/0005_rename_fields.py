@@ -7,23 +7,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movies', '0004_rename_fields'),
+        ("movies", "0004_rename_fields"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='filmwork',
-            name='description',
-            field=models.TextField(blank=True, null=True, verbose_name='description'),
+            model_name="filmwork",
+            name="description",
+            field=models.TextField(blank=True, null=True, verbose_name="description"),
         ),
         migrations.AlterField(
-            model_name='filmwork',
-            name='rating',
-            field=models.FloatField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)], verbose_name='rating'),
+            model_name="filmwork",
+            name="rating",
+            field=models.FloatField(
+                blank=True,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(100),
+                ],
+                verbose_name="rating",
+            ),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='description',
-            field=models.TextField(blank=True, null=True, verbose_name='genre_description'),
+            model_name="genre",
+            name="description",
+            field=models.TextField(
+                blank=True, null=True, verbose_name="genre_description"
+            ),
         ),
     ]

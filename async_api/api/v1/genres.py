@@ -12,16 +12,17 @@ from services.genres import BaseGenreService, get_genre_service
 router = APIRouter()
 
 
-@router.get('/',
-            response_model=list[Genre],
-            summary='Список жанров',
-            description="""Возвращает полный список жанров""",
-            )
+@router.get(
+    "/",
+    response_model=list[Genre],
+    summary="Список жанров",
+    description="""Возвращает полный список жанров""",
+)
 @cache.cached
 async def all_genres(
-        page_number: int = Query(default=1, alias='page[number]'),
-        page_size: int = Query(default=50, alias='page[size]'),
-        genre_service: BaseGenreService = Depends(get_genre_service)
+    page_number: int = Query(default=1, alias="page[number]"),
+    page_size: int = Query(default=50, alias="page[size]"),
+    genre_service: BaseGenreService = Depends(get_genre_service),
 ) -> list[Genre]:
     """
     Список жанров
@@ -39,23 +40,24 @@ async def all_genres(
         Genre(
             uuid=genre.id,
             name=genre.name,
-        ) for genre in genres
+        )
+        for genre in genres
     ]
 
 
 @router.get(
-    '/{genre_id}',
+    "/{genre_id}",
     responses={
-        HTTPStatus.OK.value: {'response': Genre},
-        HTTPStatus.NOT_FOUND.value: {'response': Message}
+        HTTPStatus.OK.value: {"response": Genre},
+        HTTPStatus.NOT_FOUND.value: {"response": Message},
     },
-    summary='Данные по конкретному жанру',
+    summary="Данные по конкретному жанру",
     description="""Возвращает данные по конкретному жанру""",
 )
 @cache.cached
 async def genre_details(
-        genre_id: uuid.UUID,
-        genre_service: BaseGenreService = Depends(get_genre_service)) -> Genre:
+    genre_id: uuid.UUID, genre_service: BaseGenreService = Depends(get_genre_service)
+) -> Genre:
     """
     Данные по конкретному жанру
 
@@ -66,9 +68,7 @@ async def genre_details(
 
     if not genre:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail=GENRE_DETAILS_NOT_FOUND)
+            status_code=HTTPStatus.NOT_FOUND, detail=GENRE_DETAILS_NOT_FOUND
+        )
 
-    return Genre(
-        uuid=genre.id,
-        name=genre.name
-    )
+    return Genre(uuid=genre.id, name=genre.name)

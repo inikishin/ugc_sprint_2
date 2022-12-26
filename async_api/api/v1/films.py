@@ -13,20 +13,20 @@ from services.films import BaseFilmService, get_film_service
 router = APIRouter()
 
 
-@router.get('/',
-            response_model=list[SearchItemFilm],
-            summary='Список фильмов',
-            description="""Возвращает отсортированный по рейтингу список
+@router.get(
+    "/",
+    response_model=list[SearchItemFilm],
+    summary="Список фильмов",
+    description="""Возвращает отсортированный по рейтингу список
             фильмов, с возможностью отбора по жанру""",
-            )
+)
 @cache.cached
 async def all_films(
-        sort: str = '-imdb_rating',
-        genre: Optional[uuid.UUID] = Query(
-            default=None, alias='filter[genre]'),
-        page_number: int = Query(default=1, alias='page[number]'),
-        page_size: int = Query(default=50, alias='page[size]'),
-        film_service: BaseFilmService = Depends(get_film_service)
+    sort: str = "-imdb_rating",
+    genre: Optional[uuid.UUID] = Query(default=None, alias="filter[genre]"),
+    page_number: int = Query(default=1, alias="page[number]"),
+    page_size: int = Query(default=50, alias="page[size]"),
+    film_service: BaseFilmService = Depends(get_film_service),
 ) -> list[SearchItemFilm]:
     """
     Главная страница
@@ -47,26 +47,24 @@ async def all_films(
         return []
 
     return [
-        SearchItemFilm(
-            uuid=film.id,
-            title=film.title,
-            imdb_rating=film.imdb_rating
-        ) for film in films
+        SearchItemFilm(uuid=film.id, title=film.title, imdb_rating=film.imdb_rating)
+        for film in films
     ]
 
 
-@router.get('/search',
-            response_model=list[SearchItemFilm],
-            summary='Поиск по фильмам',
-            description="""Возвращает список найденных фильмов на основе
+@router.get(
+    "/search",
+    response_model=list[SearchItemFilm],
+    summary="Поиск по фильмам",
+    description="""Возвращает список найденных фильмов на основе
             запроса""",
-            )
+)
 @cache.cached
 async def film_search(
-        query: str,
-        page_number: int = Query(default=1, alias='page[number]'),
-        page_size: int = Query(default=50, alias='page[size]'),
-        film_service: BaseFilmService = Depends(get_film_service)
+    query: str,
+    page_number: int = Query(default=1, alias="page[number]"),
+    page_size: int = Query(default=50, alias="page[size]"),
+    film_service: BaseFilmService = Depends(get_film_service),
 ) -> list[SearchItemFilm]:
     """
     Поиск по фильмам
@@ -86,27 +84,23 @@ async def film_search(
         return []
 
     return [
-        SearchItemFilm(
-            uuid=film.id,
-            title=film.title,
-            imdb_rating=film.imdb_rating
-        ) for film in films
+        SearchItemFilm(uuid=film.id, title=film.title, imdb_rating=film.imdb_rating)
+        for film in films
     ]
 
 
 @router.get(
-    '/{film_id}',
+    "/{film_id}",
     responses={
-        HTTPStatus.OK.value: {'response': Film},
-        HTTPStatus.NOT_FOUND.value: {'response': Message}
+        HTTPStatus.OK.value: {"response": Film},
+        HTTPStatus.NOT_FOUND.value: {"response": Message},
     },
-    summary='Полная информация по фильму',
+    summary="Полная информация по фильму",
     description="""Возвращает полную информацию по фильму""",
 )
 @cache.cached
 async def film_details(
-        film_id: uuid.UUID,
-        film_service: BaseFilmService = Depends(get_film_service)
+    film_id: uuid.UUID, film_service: BaseFilmService = Depends(get_film_service)
 ) -> Film:
     """
     Полная информация по фильму
@@ -117,23 +111,16 @@ async def film_details(
 
     if not film:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail=FILM_DETAILS_NOT_FOUND)
+            status_code=HTTPStatus.NOT_FOUND, detail=FILM_DETAILS_NOT_FOUND
+        )
 
     return Film(
         uuid=film.id,
         imdb_rating=film.imdb_rating,
-        genre=[
-            FilmGenre(uuid=x.id, name=x.name) for x in film.genre
-        ],
+        genre=[FilmGenre(uuid=x.id, name=x.name) for x in film.genre],
         title=film.title,
         description=film.description,
-        directors=[
-            FilmPerson(uuid=x.id, full_name=x.name) for x in film.directors
-        ],
-        actors=[
-            FilmPerson(uuid=x.id, full_name=x.name) for x in film.actors
-        ],
-        writers=[
-            FilmPerson(uuid=x.id, full_name=x.name) for x in film.writers
-        ]
+        directors=[FilmPerson(uuid=x.id, full_name=x.name) for x in film.directors],
+        actors=[FilmPerson(uuid=x.id, full_name=x.name) for x in film.actors],
+        writers=[FilmPerson(uuid=x.id, full_name=x.name) for x in film.writers],
     )

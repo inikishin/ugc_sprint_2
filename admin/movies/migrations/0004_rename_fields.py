@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movies', '0003_change_fields'),
+        ("movies", "0003_change_fields"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='genrefilmwork',
-            old_name='film_work_id',
-            new_name='film_work',
+            model_name="genrefilmwork",
+            old_name="film_work_id",
+            new_name="film_work",
         ),
         migrations.RenameField(
-            model_name='genrefilmwork',
-            old_name='genre_id',
-            new_name='genre',
+            model_name="genrefilmwork",
+            old_name="genre_id",
+            new_name="genre",
         ),
         migrations.RenameField(
-            model_name='personfilmwork',
-            old_name='film_work_id',
-            new_name='film_work',
+            model_name="personfilmwork",
+            old_name="film_work_id",
+            new_name="film_work",
         ),
         migrations.RenameField(
-            model_name='personfilmwork',
-            old_name='person_id',
-            new_name='person',
+            model_name="personfilmwork",
+            old_name="person_id",
+            new_name="person",
         ),
     ]

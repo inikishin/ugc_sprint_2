@@ -19,16 +19,20 @@ def allow(roles):
     is valid and current user matches specified roles the decorator retuns
     original function (authenticated), otherwise, it returns 403 Forbidden.
     """
+
     def deco(func):
-        @wraps(func)  # To make sure function with different name is returned for different deco calls
+        @wraps(
+            func
+        )  # To make sure function with different name is returned for different deco calls
         @jwt_required()
         def inner(*args, **kwargs):
             user_id = get_jwt_identity()
-            user_role_name = get_jwt()['role_names']
+            user_role_name = get_jwt()["role_names"]
             if user_id and set(user_role_name).intersection(roles):
                 return func(*args, **kwargs)
             else:
-                raise Forbidden('Access denied. Insufficient permissions')
+                raise Forbidden("Access denied. Insufficient permissions")
 
         return inner
+
     return deco

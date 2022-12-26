@@ -25,4 +25,4 @@ class MovieLastViewTime(BaseModel):
 
 
 class SuccessResponse(BaseModel):
-    msg: str = 'Success'
+    msg: str = "Success"
