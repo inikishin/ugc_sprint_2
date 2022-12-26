@@ -2,7 +2,7 @@ FROM python:3.9.13-slim-buster
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+COPY ./ugc_etl/requirements.txt requirements.txt
 
 RUN apt-get update
 RUN pip install --upgrade pip
