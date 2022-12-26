@@ -18,6 +18,7 @@ class LoggerMiddleware(BaseHTTPMiddleware):
                     extra={
                         'request_id': request.headers.get('X-Request-Id'),
                         'user_ip': request.client.host,
+                        'tag': 'ugc_api',
                     })
 
         response = await call_next(request)
