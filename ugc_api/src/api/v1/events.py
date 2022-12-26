@@ -1,32 +1,10 @@
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
 
 from services.event_service import EventService, get_event_service
+from api.v1.schemes import (MovieRating, MovieHistory, MovieBookmark,
+                            MovieLastViewTime)
 
 router = APIRouter()
-
-
-class MovieRating(BaseModel):
-    movie_id: str
-    user_id: str
-    rating: float
-
-
-class MovieHistory(BaseModel):
-    movie_id: str
-    user_id: str
-    viewed: int
-
-
-class MovieBookmark(BaseModel):
-    movie_id: str
-    user_id: str
-
-
-class MovieLastViewTime(BaseModel):
-    movie_id: str
-    user_id: str
-    paused_sec: int
 
 
 @router.post('/send_rating/', summary='Отправить рейтинг фильма от пользователя')
