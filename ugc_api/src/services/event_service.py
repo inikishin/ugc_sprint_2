@@ -9,12 +9,10 @@ from core.constants import TOPIC_BOOKMARKS, TOPIC_RATING, TOPIC_VIEWS, TOPIC_LAS
 
 class EventService:
     def __init__(self, servers: list[str]):
-        self.producer = AIOKafkaProducer(bootstrap_servers=servers)
+        loop = asyncio.new_event_loop()
+        self.producer = AIOKafkaProducer(bootstrap_servers=servers, loop=loop)
 
-    async def _async_send_message(self,
-                                  topic: str,
-                                  key: str,
-                                  value: str) -> None:
+    async def _send_message(self, topic: str, key: str, value: str) -> None:
         await self.producer.start()
         try:
             await self.producer.send_and_wait(
@@ -24,9 +22,6 @@ class EventService:
             )
         finally:
             await self.producer.stop()
-
-    async def _send_message(self, topic: str, key: str, value: str) -> None:
-        asyncio.run(self._async_send_message(topic, key, value))
 
     def send_rating(self, user_id: str, movie_id: str, rating: float) -> None:
         self._send_message(TOPIC_RATING,
