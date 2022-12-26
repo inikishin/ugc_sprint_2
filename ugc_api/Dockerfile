@@ -3,7 +3,6 @@ FROM python:3.9.13-slim-buster
 WORKDIR /data
 
 RUN apt-get update
-RUN apt-get -y install curl
 
 RUN groupadd -r api_group && useradd -d /data -r -g api_group api_user \
     && chown api_user:api_group -R /data
